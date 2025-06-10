@@ -1,4 +1,4 @@
-# BMGDHAI_Paper
+# BMJ DHAI_Paper
 
 # Early Prediction of Gestational Diabetes Mellitus using Machine Learning
 
