@@ -14,7 +14,7 @@ This work focuses on the development and evaluation of machine learning models t
 *First-trimester* (9 variables), *Nulliparous* (7 variables), *Multiparous* (8 variables, first-trimester + previous pregnancy) and *Past-pregnancy* (6 variables, pre-conception).  
 Performance was estimated with 5-fold nested cross-validation; discrimination (AUROC ± 95 % CI), calibration and decision-curve net benefit were reported.
 
-**Results** First-trimester models showed AUROC ≈ 0.82 with good calibration.  Multiparous models achieved AUROC 0.88–0.89 after adding previous-pregnancy features.  Past-pregnancy models alone still reached AUROC ≈ 0.86.  All parsimonious models out-performed a dummy baseline and provided positive net benefit across clinically relevant thresholds.
+**Results** First-trimester models showed AUROC ~0.82 with good calibration.  Multiparous models achieved AUROC 0.88–0.89 after adding previous-pregnancy features.  Past-pregnancy models alone still reached AUROC ~0.86.  All parsimonious models out-performed a dummy baseline and provided positive net benefit across clinically relevant thresholds.
 
 **Conclusion** A handful of non-invasive predictors can give robust early-pregnancy GDM risk estimates; previous-pregnancy history further improves accuracy in multiparous women.  External validation and prospective trials remain necessary before clinical deployment.
 
