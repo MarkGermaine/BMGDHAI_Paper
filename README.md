@@ -6,65 +6,53 @@ This repository contains the code and resources for the research paper titled: *
 
 This work focuses on the development and evaluation of machine learning models to predict Gestational Diabetes Mellitus (GDM) early in pregnancy using electronic health record (EHR) data. We explore the predictive power of data from the first antenatal visit and assess the improvement in model performance when incorporating data from previous pregnancies.
 
-## Abstract
+## Abstract (abridged)
 
-**Objective:** To assess the performance of machine learning (ML) models in predicting gestational diabetes mellitus (GDM) using electronic health record (EHR) data from the first antenatal visit, and determine whether incorporating previous pregnancies data improves performance. 
+**Objective** Assess whether a compact set of routinely collected variables can predict gestational diabetes mellitus (GDM) at the first antenatal visit, and quantify the added value of previous-pregnancy information.
 
-**Methods and Analysis:** In this retrospective cohort study, several ML models were developed to predict GDM using EHR data from nulliparous and multiparous populations (n=27,561, GDM 11.6%). Data from past pregnancies (n=4,005) were used to enhance future GDM predictions.  [cite_start]We evaluated four ML algorithms: logistic regression (LR), random forest (RF), XGBoost (XGB), and explainable boosting machine (EBM).  Model performance was assessed on an internal validation set by looking at model discrimination (AUROC), calibration (plots, slope, and intercept), and decision-curve analysis for clinical usefulness. 
+**Methods** In 27 561 pregnancies (GDM 11.6 %) we trained logistic-regression (LR), random-forest (RF), XGBoost (XGB) and explainable-boosting (EBM) models in four cohorts:  
+*First-trimester* (9 variables), *Nulliparous* (7 variables), *Multiparous* (8 variables, first-trimester + previous pregnancy) and *Past-pregnancy* (6 variables, pre-conception).  
+Performance was estimated with 5-fold nested cross-validation; discrimination (AUROC ± 95 % CI), calibration and decision-curve net benefit were reported.
 
-**Results:** First-trimester models using all features achieved an AUROC of 0.832 (slope 0.967; intercept -0.088) with LR, which was similar to more complex models like XGB (AUROC 0.828; slope 0.976; intercept -0.072).  The model incorporating past pregnancy data along with first-trimester data showed the highest predictive performance, with XGB achieving an AUROC of 0.904 (slope 0.618; intercept -0.136). Models that used a smaller set of top clinical features also performed well for both first-trimester (AUROC 0.809; slope 0.978; intercept -0.006; 9 predictors) and past pregnancy (AUROC 0.897; slope 1.137; intercept 0.161; 8 predictors) scenarios. 
+**Results** First-trimester models showed AUROC ≈ 0.82 with good calibration.  Multiparous models achieved AUROC 0.88–0.89 after adding previous-pregnancy features.  Past-pregnancy models alone still reached AUROC ≈ 0.86.  All parsimonious models out-performed a dummy baseline and provided positive net benefit across clinically relevant thresholds.
 
-**Conclusion:** The inclusion of data from previous pregnancies improved the performance of ML models for GDM prediction.  Furthermore, using a focused set of clinically relevant features produced comparable performance, suggesting the potential for integration into clinical decision support systems. These findings indicate the promise of early GDM risk identification in both first-time and subsequent pregnancies. However, further research, including external validation and clinical trials, is necessary to establish the practical utility of these models and their impact on maternal and neonatal outcomes. 
+**Conclusion** A handful of non-invasive predictors can give robust early-pregnancy GDM risk estimates; previous-pregnancy history further improves accuracy in multiparous women.  External validation and prospective trials remain necessary before clinical deployment.
 
-## Repository Contents
+## Repository layout
 
-This repository provides the following resources:
+```
+BMJDHAI_Paper/
+├─ models/                       # Git-LFS tracked bundles
+│  ├─ First_Trimester.joblib        # First-Trimester
+│  ├─ Nulliparous.joblib   # Nulliparous
+│  ├─ Past_Pregnancy.joblib           # Past-Pregnancy
+│  └─ Multiparous_Models.joblib          # Multiparous
+├─ preprocessors/
+│  ├─ First-Trimester_preprocessor.pkl
+│  ├─ Nulliparous_preprocessor.pkl
+│  ├─ Multiparous_preprocessor.pkl
+│  └─ PastPregnancy_preprocessor.pkl
+├─ src/
+│  └─ utils.py                  # simple loaders
+├─ notebooks/
+│  └─ 01_quick_demo.ipynb       # short load-and-predict demo
+├─ requirements.txt
+└─ .gitattributes               # tells Git to use LFS for *.joblib
+```
 
-1.  **Generic Code:** A general outline of the code structure and procedures applied to the various study populations. This can serve as a template for researchers looking to apply similar methodologies.
-2.  **FTP-9 Model:** The trained machine learning model for the First-Trimester Population using the top 9 most predictive features.
-3.  **SPP-8 Model:** The trained machine learning model for the Sequential Pregnancy Population using the top 8 most predictive features from both past and current pregnancies.
-4.  **Preprocessors:** The corresponding data preprocessors for both the FTP-9 and SPP-8 models to ensure data is correctly formatted before being fed into the models.
+Each bundle stores the four fitted estimators (RF, LR, XGB, EBM) plus ROC/PR arrays and calibration data.
 
-## Model Details
+## Model feature sets
 
-### First-Trimester Population (FTP-9) Model
+| Cohort / bundle | # Predictors | Key variables |
+|-----------------|-------------|---------------|
+| **First-trimester** | 9 | Ethnicity, family-history-diabetes, history-of-GDM, endocrine problems, parity, age, BMI, systolic BP, diastolic BP |
+| **Nulliparous** | 7 | Same as FTP-9 except parity & history-of-GDM |
+| **Multiparous** | 8 | Ethnicity, age, inter-pregnancy weight-change, history-of-GDM, BMI, inter-pregnancy interval, previous birth-weight percentile, family-history-diabetes |
+| **Past-pregnancy** | 6 | Ethnicity, age, history-of-GDM, BMI, previous birth-weight percentile, family-history-diabetes |
 
-This model is designed to predict GDM risk using data available at the first antenatal visit (~12th week of gestation) for all pregnancies. 
+---
 
-* **Model:** `FTP-9_model.pkl`
-* **Preprocessor:** `FTP-9_preprocessor.pkl`
-
-#### FTP-9 Features
-
-The model utilizes the following 9 features:
-* **Ethnicity:** The ethnic origin of the patient. 
-* **Family History of Diabetes:** A binary indicator of whether the patient has a family history of diabetes. 
-* **Previous History of GDM:** A binary indicator of whether the patient had GDM in a previous pregnancy. 
-* **Endocrine Problems:** A binary indicator for the presence of endocrine conditions such as Polycystic Ovary Syndrome (PCOS) or thyroid issues. 
-* **Parity:** An integer representing the number of times the patient has given birth. 
-* **Age:** The maternal age in years. 
-* **BMI:** Maternal Body Mass Index. 
-* **Systolic Blood Pressure:** The systolic blood pressure measurement. 
-* **Diastolic Blood Pressure:** The diastolic blood pressure measurement. 
-
-### Sequential Pregnancy Population (SPP-8) Model
-
-This model is developed for multiparous women and incorporates data from previous pregnancies to predict GDM in the current pregnancy. 
-
-* **Model:** `SPP-8_model.pkl`
-* **Preprocessor:** `SPP-8_preprocessor.pkl`
-
-#### SPP-8 Features
-
-The model utilizes the following 8 features:
-* **Ethnicity:** The ethnic origin of the patient. 
-* **Age:** The maternal age in years. 
-* **Interpregnancy weight change:** The change in maternal booking weight between successive pregnancies (in float). 
-* **History of GDM:** A binary indicator of a GDM diagnosis in any previous pregnancy. 
-* **BMI:** Maternal Body Mass Index at the current booking visit. 
-* **Time between pregnancies:** The inter-pregnancy interval in days. 
-* **Birthweight Percentile:** The birthweight percentile from a previous pregnancy, calculated based on the baby's weight and gestational age at delivery. 
-* **Family history of diabetes:** A binary indicator of a family history of diabetes. 
 
 ## Usage
 
